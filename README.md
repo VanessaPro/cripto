@@ -1,2 +1,2 @@
 # cripto
- Cripto moedas usando o React com Typescript
+ Criptomoedas usando o React com Typescript
