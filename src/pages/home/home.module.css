@@ -50,7 +50,7 @@ table th{
     font-size: 14px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: white
+    color: white;
 }
 
 .tdlabel span{
@@ -63,14 +63,16 @@ table th{
     color: #bbb;
 }
 
-.tdProfit{
-    color: #12f98a;
-}
 
-.tdLoss{
+.tdProfit{
+ color: chartreuse;
+
+ } 
+
+ .tdLoss{
     color: #f91257;
 }
-
+   
 .link{
     text-decoration: none;
     color: #fff;

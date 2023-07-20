@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import styles from './home.module.css'
 import {BiSearch} from 'react-icons/bi'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
-//https://coinlib.io/api/v1/coinlist?key=bb37b73cb5fc8e46&
+//https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL
 
 //Sua chave de API: bb37b73cb5fc8e46
 
-interface CoinsProps{
+interface CoinProps{
     name:string;
     delta_24h:string;
     price:string;
@@ -17,46 +17,50 @@ interface CoinsProps{
     market_cap:string;
     formatedPrice:string;
     formatedMarket:string;
+    numberDelta:number;
 
 }
 
 interface DataProps{
-    coins: CoinsProps[];
+    coins: CoinProps[];
 }
 
 export function Home (){
-    const [coins, setCoins] =useState<CoinsProps[]>([])
+    const [coins, setCoins] = useState<CoinProps[]>([])
+    const [inputValue, setInputValue] = useState("")
+    const navigate = useNavigate();
    
-    useEffect(() => {
+      useEffect(() => {
    
-        function getData() {
+          function getData() {
      
-          fetch('https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL')
+           fetch( `https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
            .then(response => response.json()) 
            .then((data: DataProps) => {
               let coinsData = data.coins.slice(0, 15);
 
-              let price = Intl.NumberFormat("pt-BR",{
+              let price = Intl.NumberFormat("pt-BR", {
                 style:"currency",
                 currency:"BRL"
               })
 
-              const formatresult = coinsData.map((item) =>{
+              const formatResult = coinsData.map((item) =>{
                 const formated ={
                     ...item,
                     formatedPrice:price.format(Number(item.price)),
                     formatedMarket:price.format(Number(item.market_cap)),
+                    numberDelta:parseFloat(item.delta_24h.replace(",", "."))
                 }
 
-                return formated;
+              return formated;
               })
                
              
-              setCoins(formatresult);
+              setCoins(formatResult);
            })
            
           
-        },
+        }
     
         getData();
 
@@ -64,12 +68,23 @@ export function Home (){
 
     }, [])
 
+    function handleSearch(e: FormEvent){
+        e.preventDefault();
+        if(inputValue === "") return;
+          
+        navigate(`/datail/${inputValue}`)
+
+    }
+
+
     return(
         
         <main className={styles.container}>
-            <form className={styles.form}>
+            <form className={styles.form} onSubmit={handleSearch}>
                 <input
                 placeholder='Digite o simbolo da moeda:BTC..'
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
                 
                 />
                 <button type="submit">
@@ -87,23 +102,27 @@ export function Home (){
                         <th scope='col'>Volume</th>
                     </tr>
                 </thead>
+
                 <tbody id='tbory'>
-                  <tr className={styles.tr}>
-                    <td className={styles.tdLabel} data-label="Moeda">
-                        <Link className={styles.link} to="/detail/btc">
-                            <span>Bitcoin</span> | BTC
-                        </Link>
-                    </td>
-                    <td className={styles.tdLabel} data-label="Mercado">
-                        R$ 19293
-                    </td>
-                    <td className={styles.tdLabel} data-label="Preço">
-                        R$ 40.962
-                    </td>
-                    <td className={styles.tdProfit} data-label="Volume">
-                        <span>-5.3</span>
-                    </td>
-                  </tr>
+                  {coins.map(coin =>(
+                <tr key={coin.name}  className={styles.tr}>
+                <td className={styles.tdLabel} data-label="Moeda">
+                    <Link className={styles.link} to={`/detail/${coin.symbol}`}>
+                        <span>{coin.name}</span> | {coin.symbol}
+                    </Link>
+                </td>
+                <td className={styles.tdLabel} data-label="Mercado">
+                    {coin.formatedMarket}
+                </td>
+                <td className={styles.tdLabel} data-label="Preço">
+                    {coin.formatedPrice}
+                </td>
+                <td className={coin.numberDelta >= 0 ? styles.tdProfit : styles.tdLoss} data-label="Volume">
+                <span>{coin.delta_24h}</span>
+                </td>
+
+                </tr> 
+                  ))}
                 </tbody>
             </table>
 
