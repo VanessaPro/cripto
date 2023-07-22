@@ -34,8 +34,8 @@ export function Home (){
    
           function getData() {
      
-           fetch( `https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
-           .then(response => response.json()) 
+           fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
+           .then(response => response.json())
            .then((data: DataProps) => {
               let coinsData = data.coins.slice(0, 15);
 
@@ -72,7 +72,7 @@ export function Home (){
         e.preventDefault();
         if(inputValue === "") return;
           
-        navigate(`/datail/${inputValue}`)
+        navigate(`/detail/${inputValue}`)
 
     }
 
