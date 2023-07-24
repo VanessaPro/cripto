@@ -1,6 +1,7 @@
 import { useEffect,useState} from 'react'
 import styles from './detail.module.css'
-import {useParams,useNavigate} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
+ 
 
 interface CoinProp{
     symbol:string;
@@ -15,58 +16,58 @@ interface CoinProp{
     formatedMarket:string;
     formatedLowprice:string;
     formatedHighprice:string;
-    error?:string;
     numberDelta:number;
-}
+    error?:string;
+}  
 
-export function Detail (){
-    const {cripto} =useParams();
+export function Detail(){
+    const {cripto} = useParams();
     const [detail, setDetail] = useState<CoinProp>()
     const [loading, setLoading] = useState(true);
+   
+   
+     
 
-    const navigate = useNavigate();
+ useEffect(() =>{
 
-     useEffect(() =>{
-
-        function getData(){
-          fetch(`https://sujeitoprogramador.com/api-cripto/coin/?key=bb37b73cb5fc8e46&symbol=${cripto}`)
-          .then(response => response.json()) 
-          .then((data:CoinProp) =>{
-
-            if(data.error){
-             navigate("/")
-
-             }
-
-            let price = Intl.NumberFormat("pt-BR", {
-                style:"currency",
-                currency:"BRL"
-              })
-
-            const resultData = {
-            ...data,
-            formatedPrice:price.format(Number(data.price)),
-            formatedMarket:price.format(Number(data.market_cap)),
-            formatedLowprice:price.format(Number(data.low_24h)),
-            formatedHighprice:price.format(Number(data.high_24h)),
-            numberDelta:parseFloat(data.delta_24h.replace(",", "."))
+         function getData(){
+            fetch(`https://sujeitoprogramador.com/api-cripto/coin/?key=bb37b73cb5fc8e46&symbol=${cripto}`)
+            .then(response => response.json())
+            .then((data:CoinProp) => {
+              
+                let price = Intl.NumberFormat("pt-BR", {
+                    style:"currency",
+                    currency:"BRL"
+                })
+                 
+        
+                const resultData = {
+                ...data,
+                formatedPrice:price.format(Number(data.price)),
+                formatedMarket:price.format(Number(data.market_cap)),
+                formatedLowprice:price.format(Number(data.low_24h)),
+                formatedHighprice:price.format(Number(data.high_24h)),
+                numberDelta:parseFloat(data.delta_24h.replace(",", "."))
 
             }
-
-            setDetail(resultData);
-            setLoading(false);
-
-          })
-        }
-       
+                
+                
+                setDetail(resultData);
+                setLoading(false);
+               
+         
+          })    
+        }     
+        
+        
         getData();
-     },[cripto])
+     }, [cripto])
 
 
      if(loading){
         return(
             <div className={styles.container}>
-                <h4 className={styles.center}> Carregando informações...</h4>
+                <h4 className={styles.center}>Carregando informações...</h4>
             </div>
         )
 
@@ -99,4 +100,4 @@ export function Detail (){
             </section>
         </div>
     )
-}
+    }

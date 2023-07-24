@@ -30,13 +30,13 @@ export function Home (){
     const [inputValue, setInputValue] = useState("")
     const navigate = useNavigate();
    
-      useEffect(() => {
+     useEffect(() => {
    
           function getData() {
      
-           fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
+         fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
            .then(response => response.json())
-           .then((data: DataProps) => {
+           .then((data:DataProps) => {
               let coinsData = data.coins.slice(0, 15);
 
               let price = Intl.NumberFormat("pt-BR", {
@@ -64,15 +64,13 @@ export function Home (){
     
         getData();
 
-
-
     }, [])
 
     function handleSearch(e: FormEvent){
         e.preventDefault();
         if(inputValue === "") return;
           
-        navigate(`/detail/${inputValue}`)
+        navigate(`/detail${inputValue}`)
 
     }
 
@@ -82,7 +80,7 @@ export function Home (){
         <main className={styles.container}>
             <form className={styles.form} onSubmit={handleSearch}>
                 <input
-                placeholder='Digite o simbolo da moeda:BTC..'
+                placeholder='Digite o símbolo da moeda: BTC..'
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 
@@ -103,7 +101,7 @@ export function Home (){
                     </tr>
                 </thead>
 
-                <tbody id='tbory'>
+                <tbody id="tbody">
                   {coins.map(coin =>(
                 <tr key={coin.name}  className={styles.tr}>
                 <td className={styles.tdLabel} data-label="Moeda">
