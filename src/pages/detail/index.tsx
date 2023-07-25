@@ -27,45 +27,42 @@ export function Detail(){
    
    
      
-
- useEffect(() =>{
-
-         function getData(){
-           fetch(`https://sujeitoprogramador.com/api-cripto/coin/?key=bb37b73cb5fc8e46&symbol=${cripto}`)
-            .then(response => response.json())
-            .then((data:CoinProp) => {
-              
-                const price = Intl.NumberFormat("pt-BR", {
-                    style:"currency",
-                    currency:"BRL"
-                })
-                 
-        
-                const resultData = {
-                ...data,
-                formatedPrice:price.format(Number(data.price)),
-                formatedMarket:price.format(Number(data.market_cap)),
-                formatedLowprice:price.format(Number(data.low_24h)),
-                formatedHighprice:price.format(Number(data.high_24h)),
-                numberDelta:parseFloat(data.delta_24h.replace(",", "."))
-
+    useEffect(() => {
+        async function getData() {
+          try {
+            const response = await fetch(`https://sujeitoprogramador.com/api-cripto/coin/?key=bb37b73cb5fc8e46&symbol=${cripto}`);
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
             }
+            const data = await response.json();
+            
+            const price = Intl.NumberFormat("pt-BR", {
+              style: "currency",
+              currency: "BRL"
+            });
 
-                
-                
-                setDetail(resultData);
-                setLoading(false);
+      
+            const resultData = {
+              ...data,
+              formatedPrice: price.format(Number(data.price)),
+              formatedMarket: price.format(Number(data.market_cap)),
+              formatedLowprice: price.format(Number(data.low_24h)),
+              formatedHighprice: price.format(Number(data.high_24h)),
+              numberDelta: parseFloat(data.delta_24h.replace(",", "."))
+            };
+      
+            setDetail(resultData);
+            setLoading(false);
+          } catch (error) {
             
-            
-         
-          })    
-        }     
-        
-        
+            console.error('Error fetching data:', error);
+            setLoading(false); 
+          }
+        }
+      
         getData();
-     }, [cripto])
-
-
+      }, [cripto, setDetail, setLoading]);
+      
      if(loading){
         return(
             <div className={styles.container}>

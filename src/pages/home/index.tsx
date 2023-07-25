@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 //https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL
 
-//Sua chave de API: bb37b73cb5fc8e46
+
 
 interface CoinProps{
     name:string;
@@ -21,9 +21,6 @@ interface CoinProps{
 
 }
 
-interface DataProps{
-    coins: CoinProps[];
-}
 
 export function Home (){
     const [coins, setCoins] = useState<CoinProps[]>([])
@@ -31,43 +28,48 @@ export function Home (){
     const navigate = useNavigate();
    
      useEffect(() => {
-   
+
         function getData() {
      
-          fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
-           .then(response => response.json())
-           .then((data:DataProps) => {
+            fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
+            .then(response => {
+              // Verificar se houve um erro de rede 
+              if (!response.ok) {
+                throw new Error('Erro na solicitação da API');
+              }
+              return response.json();
+            })
+            .then((data) => {
               let coinsData = data.coins.slice(0, 15);
-
-              let price = Intl.NumberFormat("pt-BR", {
-                style:"currency",
-                currency:"BRL"
-              })
-
-              const formatResult = coinsData.map((item) =>{
-                const formated ={
-                    ...item,
-                    formatedPrice:price.format(Number(item.price)),
-                    formatedMarket:price.format(Number(item.market_cap)),
-                    numberDelta:parseFloat(item.delta_24h.replace(",", "."))
-                }
-
-              return formated;
-              })
-              
-               
-             
+          
+              const price = Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+              });
+          
+              const formatResult = coinsData.map((item: { price: any; market_cap: any; delta_24h: string; }) => {
+                const formated = {
+                  ...item,
+                  formatedPrice: price.format(Number(item.price)),
+                  formatedMarket: price.format(Number(item.market_cap)),
+                  numberDelta: parseFloat(item.delta_24h.replace(",", "."))
+                };
+          
+                return formated;
+              });
+          
               setCoins(formatResult);
-           })
-           
-           
-           
+            })
+            .catch(error => {
+              // Tratar o erro aqui
+              console.error('Erro ao consumir a API:', error);
+             
+            });
         }
     
         getData();
         
-
-    }, [])
+}, [])
 
     function handleSearch(e: FormEvent){
         e.preventDefault();
