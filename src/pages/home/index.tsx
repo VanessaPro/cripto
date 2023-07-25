@@ -32,9 +32,9 @@ export function Home (){
    
      useEffect(() => {
    
-          function getData() {
+        function getData() {
      
-         fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
+          fetch(`https://sujeitoprogramador.com/api-cripto/?key=bb37b73cb5fc8e46&pref=BRL`)
            .then(response => response.json())
            .then((data:DataProps) => {
               let coinsData = data.coins.slice(0, 15);
@@ -54,15 +54,18 @@ export function Home (){
 
               return formated;
               })
+              
                
              
               setCoins(formatResult);
            })
            
-          
+           
+           
         }
     
         getData();
+        
 
     }, [])
 
@@ -70,7 +73,7 @@ export function Home (){
         e.preventDefault();
         if(inputValue === "") return;
           
-        navigate(`/detail${inputValue}`)
+        navigate(`/detail/${inputValue}`)
 
     }
 

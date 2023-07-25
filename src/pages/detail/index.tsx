@@ -31,11 +31,11 @@ export function Detail(){
  useEffect(() =>{
 
          function getData(){
-            fetch(`https://sujeitoprogramador.com/api-cripto/coin/?key=bb37b73cb5fc8e46&symbol=${cripto}`)
+           fetch(`https://sujeitoprogramador.com/api-cripto/coin/?key=bb37b73cb5fc8e46&symbol=${cripto}`)
             .then(response => response.json())
             .then((data:CoinProp) => {
               
-                let price = Intl.NumberFormat("pt-BR", {
+                const price = Intl.NumberFormat("pt-BR", {
                     style:"currency",
                     currency:"BRL"
                 })
@@ -50,11 +50,13 @@ export function Detail(){
                 numberDelta:parseFloat(data.delta_24h.replace(",", "."))
 
             }
+
                 
                 
                 setDetail(resultData);
                 setLoading(false);
-               
+            
+            
          
           })    
         }     
